@@ -58,6 +58,7 @@ void loop(void) {
   // rebuild the picture after some delay
   delay(1007);
   // Comment 0
+  // Comment 1
 /*
   int var4 = digitalRead( 4 );
   int var5 = digitalRead( 5 );
