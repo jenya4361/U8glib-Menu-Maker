@@ -56,7 +56,7 @@ void loop(void) {
   } while( u8g.nextPage() );
   
   // rebuild the picture after some delay
-  delay(1010);
+  delay(1005);
 /*
   int var4 = digitalRead( 4 );
   int var5 = digitalRead( 5 );
