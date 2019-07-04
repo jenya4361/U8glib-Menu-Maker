@@ -14,12 +14,21 @@ MenuMaker::MenuMaker()
   : m_timer( 0.0f )
   , m_oldTime( 0 )
   , m_updateEveryMS( 1000 )
+  , m_windowWidth( 128 )
+  , m_windowHeight( 64 )
 {
   
 }
 
-MenuMaker::init()
+MenuMaker::init( int w, int h )
 {
+  // Init Frame
+  setWindowSize( w, h );
+  m_linesArray.push_back(Int4Data( 0, 0, 0, h ));
+  m_linesArray.push_back(Int4Data( w, 0, w, h ));
+  m_linesArray.push_back(Int4Data( 0, h, w, h ));
+  m_linesArray.push_back(Int4Data( 0, 0, w, 0 ));
+  
   // flip screen, if required
   //u8g.setRot180();
 
@@ -55,10 +64,29 @@ MenuMaker::update(unsigned long msFromStart)
     u8g.firstPage(); 
     do {
       u8g_prepare();
-      u8g.drawLine(0, 0, 0, 64);
-      // u8g.drawLine(127, 1, 127, 64);
-      //u8g.drawLine(0, 0, 128, 1);
-      //u8g.drawLine(0, 64, 128, 128);
+
+      for( int i = 0; i < m_linesArray.size(); i++ )
+        u8g.drawLine( m_linesArray[i].v1, m_linesArray[i].v2, m_linesArray[i].v3, m_linesArray[i].v4 );
+
+      for( int i = 0; i < m_scenes.size(); i++ )
+      {
+        Scene& scene = m_scenes[i];
+        if( scene.isActive() )
+        {
+          const mm::Vector< ButtonData >& buttons = scene.getButtons();
+          for( int but_i = 0; but_i < m_scenes.size(); but_i++ )
+          {
+            const ButtonData& bData = buttons[but_i];
+            const String& text = bData.first.getText();
+            const Int4Data& coords = bData.first.getCoords();
+            
+            u8g.drawBox(coords.v1, coords.v2, coords.v3, coords.v4);
+            u8g.drawStr180(coords.v3/2, coords.v2 + coords.v4 / 2, text.c_str());
+          }
+          
+        }
+      }
+        
       //u8g.drawCircle(64,32,7);
       //u8g.drawStr90(50,20, "Hello");
     } while( u8g.nextPage() );
@@ -68,5 +96,37 @@ MenuMaker::update(unsigned long msFromStart)
 
   
   m_timer -= float(deltaTimeMS) / 1000.0f;
+}
+
+void MenuMaker::createScene( const String& name )
+{
+  Scene newScene( name );
+  m_scenes.push_back( newScene );
+}
+void MenuMaker::showScene( const String& name )
+{
+  Scene& oldScene = getScene( m_activeSceneName );
+  oldScene.setActive( false );
+    
+  Scene& currentScene = getScene( name );
+  currentScene.setActive( true );
+}
+void MenuMaker::hideScene( const String& name )
+{
+  Scene& oldScene = getScene( name );
+  oldScene.setActive( false );
+}
+
+Scene& MenuMaker::getScene( const String& name )
+{
+  static Scene nullData;
+  for( int i = 0; i < m_scenes.size(); i++ )
+  {
+    Scene& scene = m_scenes[i];
+    if( scene.getName() == name )
+      return scene;
+  }
+
+  return nullData;  
 }
 
