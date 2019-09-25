@@ -1,99 +1,54 @@
-
-template<typename T>
-void* operator new(size_t s, T* v){
-  return v;
-}
-
-template<typename T> struct Simple_alloc {
-
-  Simple_alloc() {};
-
-  //memory allocation
-  T* allocate(int n)
-    { return reinterpret_cast<T*>(new char[n*sizeof(T)]); }
-  void deallocate(T* p, int n)
-    { delete[] reinterpret_cast<char*>(p); }
-
-  //construction/destruction
-  void construct(T* p, const T& t) { new(p) T(t); }  
-  void destroy(T* p) { p->~T(); } 
-};
-
 namespace mm
-{
- 
-  template<class T, class A = Simple_alloc<T> > 
-  class Vector {
+{  
+  const short kStandartVectorInitSize = 10;
+  template<class T> 
+  class Vector 
+  {    
+    public:
+      Vector( const Vector& vec ) : m_reserve( vec.m_reserve ), m_size( vec.m_size ) { m_elems = vec.m_elems; }
+      Vector() : m_reserve( kStandartVectorInitSize ), m_size( 0 ) { m_elems = new T[kStandartVectorInitSize]; }
+      Vector( const int s ) : m_reserve( s ), m_size( 0 ) { reserve(s); }
+      Vector& operator=( const Vector& );
+      ~Vector() { delete m_elems; }
+      T& operator[](int n) { return m_elems[n]; }
+      const T& operator[](int n) const { return m_elems[n]; }
+      int size() const { return m_size; }
     
-    A alloc;
-    
-    int sz;
-    T* elem;
-    int space;
-    
-    Vector(const Vector&);      //private copy constrution because I
-                    //have not got this working yet and don't
-                    //want to expose this for clients who might
-                    //be expecting it.
-    
-  public:
-    Vector() : sz(0), elem(0), space(0) {}
-    Vector(const int s) : sz(0) {
-      reserve(s);
-    }
-    
-    Vector& operator=(const Vector&); //copy assignment
-    
-    ~Vector() { 
-      for(int i=0; i<sz; ++i) alloc.destroy(&elem[i]);
-    }
-    
-    T& operator[](int n) { return elem[n]; }
-    const T& operator[](int n) const { return elem[n]; }
-    
-    int size() const { return sz; }
-    int capacity() const { return space; }
-    
-    void reserve(int newalloc);
-    void push_back(const T& val);
-    
+      void reserve(int newSize);
+      void push_back(const T& val);
+
+    private:
+      int m_size;
+      int m_reserve;
+      T* m_elems;
   };
   
-  template<class T, class A> 
-  Vector<T, A>& Vector<T, A>::operator=(const Vector& a) {
-    if(this==&a) return *this;
-    
-    if(a.size()<=space) { //enough space, no need for new allocation
-      for(int i=0; i<a.size(); ++i) elem[i]=a[i];
-      sz = a.size();
-      return *this;
-    }
-    
-    T* p = alloc.allocate(a.size());    //get new memory 
-    for(int i=0; i<a.size(); ++i) {
-      alloc.construct(&p[i], a[i]); //copy
-    }
-    for(int i=0; i<sz; ++i) alloc.destroy(&elem[i]);
-    space = sz = a.size();
-    elem = p;
-    return *this;
+  template<class T> 
+  Vector<T>& Vector<T>::operator=(const Vector& a) {
+
   }
   
-  template<class T, class A> void Vector<T, A>::reserve(int newalloc){
-    if(newalloc <= space) return;                       //never decrease space
-    T* p = alloc.allocate(newalloc);
-    for(int i=0; i<sz; ++i) alloc.construct(&p[i], elem[i]);  //copy
-    for(int i=0; i<sz; ++i) alloc.destroy(&elem[i]);
-    alloc.deallocate(elem, space);
-    elem = p;
-    space = newalloc; 
+  template<class T> 
+  void Vector<T>::reserve(int newSize)
+  {
+    T* temp = new T[newSize];
+    for( int i = 0; i < m_reserve; i++ )
+      temp[i] = m_elems[i];
+
+    delete m_elems;
+
+    m_reserve = newSize;
+    m_elems = temp;
   }
   
-  template<class T, class A> 
-  void Vector<T, A>::push_back(const T& val){
-    if(space == 0) reserve(4);        //start small
-    else if(sz==space) reserve(2*space);
-    alloc.construct(&elem[sz], val);
-    ++sz;
+  template<class T> 
+  void Vector<T>::push_back(const T& val)
+  {
+    if( m_size + 1 >= m_reserve )
+    {
+      reserve( m_reserve + kStandartVectorInitSize );
+    }
+
+    m_elems[m_size++] = val;
   }
 }

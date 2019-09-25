@@ -1,21 +1,8 @@
-#include "mmvector.h"
-
-struct Int4Data
-{
-  Int4Data(int _v1, int _v2, int _v3, int _v4)
-    : v1( _v1 )
-    , v2( _v2 )
-    , v3( _v3 )
-    , v4( _v4 )
-  {}
-  
-  int v1, v2, v3, v4;
-};
-
-template< typename T1, typename T2 >
+template< class T1, class T2 >
 struct MMPair
 {
-  MMPair(const T1& _first, const T1& _second)
+  MMPair(){}
+  MMPair(const T1& _first, const T2& _second)
     : first( _first )
     , second( _second )
   {}
@@ -24,3 +11,29 @@ struct MMPair
   T2 second;
 };
 
+struct FourData
+{
+    int d1;
+    int d2;
+    int d3;
+    int d4;
+
+    FourData() {}
+
+    FourData( const FourData& fData )
+    {
+      d1 = fData.d1;
+      d2 = fData.d2;
+      d3 = fData.d3;
+      d4 = fData.d4;
+    }
+
+    FourData(int _d1, int _d2, int _d3, int _d4)
+      : d1( _d1 )
+      , d2( _d2 )
+      , d3( _d3 )
+      , d4( _d4 )
+    {
+
+    }
+};

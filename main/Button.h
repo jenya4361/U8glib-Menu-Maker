@@ -1,16 +1,17 @@
 #include "ProjectData.h"
+#include "mmvector.h"
 
 class Button
 {
   public:
-    void setText( const String& text ) { m_textInside = text; }
-    const String& getText() const { return m_textInside; }
+  
+    void setText( const char* text ) { m_textInside = text; }
+    const char* getText() const { return m_textInside; }
 
-    void setCoords( const Int4Data& data ) { m_boxData = data; }
-    const Int4Data& getCoords() const { return m_boxData; }
+    void setCoords( const FourData& data ) { m_boxData = data; }
+    const FourData& getCoords() const { return m_boxData; }
   
   private:
-    Int4Data m_boxData;
-    String m_textInside;
+    FourData m_boxData;
+    const char* m_textInside;
 };
-
