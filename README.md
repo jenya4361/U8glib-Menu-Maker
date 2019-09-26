@@ -9,3 +9,11 @@
 * **Nesting of scenes**. Button callbacks can be used as transition to another scenes;
 
 # How to use?
+
+**1. Install U8glib in Library Manager.**
+<img src="Resources/HowToUse00.png" width="400">
+
+**2. Connect OLED to Arduino.**
+<img src="Resources/HowToUse01.png" width="500">
+
+**3. Copy source code and enjoy!**
