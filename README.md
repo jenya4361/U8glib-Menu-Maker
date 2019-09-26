@@ -11,9 +11,13 @@
 # How to use?
 
 **1. Install U8glib in Library Manager.**
+<center>
 <img src="Resources/HowToUse00.png" width="400">
+</center>
 
 **2. Connect OLED to Arduino.**
+<center>
 <img src="Resources/HowToUse01.png" width="500">
+</center>
 
 **3. Copy source code and enjoy!**
