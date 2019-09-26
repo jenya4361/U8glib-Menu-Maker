@@ -66,5 +66,5 @@ void loop(void) {
 
 **Result of the example:**
 <center>
-<img src="Resources/Example00.png" width="220">
+<img src="Resources/Example00.png" width="180">
 </center>
