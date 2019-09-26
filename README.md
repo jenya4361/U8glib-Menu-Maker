@@ -64,7 +64,7 @@ void loop(void) {
 }
 ```
 
-**Result:**
+**Result of the example:**
 <center>
-<img src="Resources/Example00.png" width="200">
+<img src="Resources/Example00.png" width="300">
 </center>
