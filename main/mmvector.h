@@ -12,10 +12,11 @@ namespace mm
       ~Vector() { delete m_elems; }
       T& operator[](int n) { return m_elems[n]; }
       const T& operator[](int n) const { return m_elems[n]; }
-      int size() const { return m_size; }
+      inline int size() const { return m_size; }
     
       void reserve(int newSize);
       void push_back(const T& val);
+      T& back();
 
     private:
       int m_size;
@@ -50,5 +51,11 @@ namespace mm
     }
 
     m_elems[m_size++] = val;
+  }
+  
+  template<class T> 
+  T& Vector<T>::back()
+  {
+    return m_elems[m_size];
   }
 }

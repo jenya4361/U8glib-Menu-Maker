@@ -7,7 +7,16 @@ static U8GLIB_SH1106_128X64 u8g(4, 5, 6, 7);  // SW SPI Com: SCK = 4, MOSI = 5, 
 // #TODO: add getters
 class MenuMaker
 {
-  public:
+  private:
+    static MenuMaker* instance;
+
+  public: 
+    static MenuMaker* Instance()
+    {
+      return instance;
+    }
+    
+  private:
     MenuMaker();
 
   public:
@@ -19,10 +28,13 @@ class MenuMaker
     void setWindowSize( int w, int h ) { m_windowWidth = w; m_windowHeight = h; }
 
   public:
-    void createScene( const char* name );
+    Scene* createScene( const char* name );
     void showScene( const char* name );
     void hideScene( const char* name );
-    Scene& getScene( const char* name );
+    Scene* getScene( const char* name );
+
+  private:
+    void render();
     
 
   private:
@@ -34,7 +46,6 @@ class MenuMaker
     int m_windowWidth;
     int m_windowHeight;
 
-    mm::Vector<FourData> m_linesArray;
-    mm::Vector<Scene> m_scenes;
-    const char* m_activeSceneName;
+    mm::Vector<Scene*> m_scenes;
+    Scene* m_activeScene;
 };
